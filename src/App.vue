@@ -1,6 +1,14 @@
 <template>
   <div class="wrapper">
-    123
+    <div class="position">
+      <svg class="icon position__icon" aria-hidden="true">
+        <use xlink:href="#icon-coordinates"></use>
+      </svg>
+      北京理工大学国防科技园2号楼10层
+      <svg class="icon position__notice" aria-hidden="true">
+        <use xlink:href="#icon-remind"></use>
+      </svg>
+    </div>
   </div>
   <div class="docker">
     <div class="docker__item docker__item--active">
@@ -31,8 +39,29 @@
 </template>
 
 <style lang="scss">
+@import './style/mixins.scss';
 .wrapper {
-
+  padding: 0 .18rem;
+}
+.position {
+  position: relative;
+  padding: .16rem .24rem .16rem 0;
+  line-height: .22rem;
+  font-size: .16rem;
+  @include ellipsis;
+  .position__icon {
+    position: relative;
+    top: .02rem;
+    width: .2rem;
+    height: .2rem;
+  }
+  .position__notice {
+    position: absolute;
+    top: .18rem;
+    right: 0;
+    width: .2rem;
+    height: .2rem;
+  }
 }
 .docker {
   display: flex;

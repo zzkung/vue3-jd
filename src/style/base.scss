@@ -1,12 +1,15 @@
+@import './viriables.scss';
+
 /**
-  * 1rem = 100px
-  */
+ * 1rem = 100px
+ */
 
 html {
   font-size: 100px;
 }
 body {
   font-size: .12rem;
+  color: $content-fontcolor;
 }
 .icon {
   width: 1.67em;
