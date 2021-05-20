@@ -1,30 +1,65 @@
 <template>
-  <div id="nav">
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
+  <div class="wrapper">
+    123
   </div>
-  <router-view/>
+  <div class="docker">
+    <div class="docker__item docker__item--active">
+      <svg class="icon" aria-hidden="true">
+        <use xlink:href="#icon-home"></use>
+      </svg>
+      <div class="docker__title">首页</div>
+    </div>
+    <div class="docker__item">
+      <svg class="icon" aria-hidden="true">
+        <use xlink:href="#icon-service"></use>
+      </svg>
+      <div class="docker__title">购物车</div>
+    </div>
+    <div class="docker__item">
+      <svg class="icon" aria-hidden="true">
+        <use xlink:href="#icon-createtask"></use>
+      </svg>
+      <div class="docker__title">订单</div>
+    </div>
+    <div class="docker__item">
+      <svg class="icon" aria-hidden="true">
+        <use xlink:href="#icon-people"></use>
+      </svg>
+      <div class="docker__title">我的</div>
+    </div>
+  </div>
 </template>
 
 <style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
+.wrapper {
+
 }
-
-#nav {
-  padding: 30px;
-
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-
-    &.router-link-exact-active {
-      color: #42b983;
+.docker {
+  display: flex;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  height: .49rem;
+  border-top: .01rem solid #f1f1f1;
+  box-sizing: border-box;
+  &__item {
+    flex: 1;
+    text-align: center;
+    .icon {
+      width: 2em;
+      height: 2em;
+      margin: .07rem 0 .02rem 0;
     }
+    &--active {
+      color: #1fa4fc;
+    }
+  }
+  &__title {
+    font-size: .2rem;
+    transform: scale(.5, .5);
+    transform-origin: center top;
   }
 }
 </style>
