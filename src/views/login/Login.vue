@@ -7,17 +7,15 @@
     <div class="wrapper__input">
       <input v-model="data.password" type="password" class="wrapper__input__content" placeholder="请输入密码" />
     </div>
-    <div class="wrapper__login-button" @click="handleLogin">登陆</div>
+    <div class="wrapper__login-button" @click="handleLogin">登录</div>
     <div class="wrapper__login-link" @click="handleRegisterClick">立即注册</div>
   </div>
 </template>
 
 <script>
 import { useRouter } from 'vue-router'
-import axios from 'axios'
+import { post } from '../../utils/request'
 import { reactive } from 'vue'
-
-axios.defaults.headers.post['Content-Type'] = 'application/json'
 
 export default {
   name: 'Login',
@@ -28,16 +26,23 @@ export default {
       password: ''
     })
     const router = useRouter()
-    const handleLogin = () => {
-      axios.post('https://www.fastmock.site/mock/fd8c284cf0ed0da6ea8218256806f57d/jd/api/user/login', {
-        username: data.username,
-        password: data.password
-      }).then(() => {
-        localStorage.isLogin = true
-        router.push({ name: 'Home' })
-      }).catch(() => {
-        alert('失败')
-      })
+    const handleLogin = async () => {
+      try {
+        const result = await post('/api/user/login', {
+          username: data.username,
+          password: data.password
+        })
+        console.log(result)
+        // ?.  在引用为空(nullish ) (null 或者 undefined) 的情况下不会引起错误，该表达式短路返回值是 undefined
+        if (result?.errno === 0) {
+          localStorage.isLogin = true
+          router.push({ name: 'Home' })
+        } else {
+          alert('登录失败')
+        }
+      } catch (e) {
+        alert('请求失败')
+      }
     }
 
     const handleRegisterClick = () => {
