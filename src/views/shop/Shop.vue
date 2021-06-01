@@ -5,6 +5,7 @@
       :item="item"
       :border="false"
     />
+    <Content />
   </div>
 </template>
 
@@ -14,6 +15,7 @@ import { useRouter, useRoute } from 'vue-router'
 import { get } from '../../utils/request'
 import Search from '../../components/Search'
 import ShopInfo from '../../components/ShopInfo'
+import Content from './Content'
 
 const useShopInfoEffect = () => {
   const route = useRoute()
@@ -39,7 +41,7 @@ const useBackRouterEffect = () => {
 
 export default {
   name: 'Shop',
-  components: { Search, ShopInfo },
+  components: { Search, ShopInfo, Content },
   setup () {
     const { item, getItemData } = useShopInfoEffect()
     const { handleBackClick } = useBackRouterEffect()
