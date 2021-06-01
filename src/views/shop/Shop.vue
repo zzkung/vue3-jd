@@ -6,6 +6,7 @@
       :border="false"
     />
     <Content />
+    <Cart />
   </div>
 </template>
 
@@ -16,6 +17,7 @@ import { get } from '../../utils/request'
 import Search from '../../components/Search'
 import ShopInfo from '../../components/ShopInfo'
 import Content from './Content'
+import Cart from './Cart'
 
 const useShopInfoEffect = () => {
   const route = useRoute()
@@ -41,7 +43,7 @@ const useBackRouterEffect = () => {
 
 export default {
   name: 'Shop',
-  components: { Search, ShopInfo, Content },
+  components: { Search, ShopInfo, Content, Cart },
   setup () {
     const { item, getItemData } = useShopInfoEffect()
     const { handleBackClick } = useBackRouterEffect()

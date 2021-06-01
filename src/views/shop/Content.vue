@@ -14,7 +14,7 @@
         v-for="item in list"
         :key="item._id"
       >
-        <img class="product__item__img" src="http://www.dell-lee.com/imgs/vue3/near.png" alt="">
+        <img class="product__item__img" :src="item.imgUrl" alt="">
         <div class="product__item__detail">
           <h4 class="product__item__title">{{item.name}}</h4>
           <p class="product__item__sales">月售 {{item.sales}} 件</p>
