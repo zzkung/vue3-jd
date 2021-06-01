@@ -85,7 +85,7 @@ export default {
   margin-bottom: .12rem;
   line-height: .32rem;
   background: $search-bgcolor;
-  color: #b7b7b7;
+  color: $search-fontcolor;
   border-radius: .16rem;
   font-size: .14rem;
   .icon {
