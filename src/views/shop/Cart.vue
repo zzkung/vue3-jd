@@ -1,25 +1,30 @@
 <template>
   <div class="cart">
     <div class="product">
-      <div
-        class="product__item"
+      <div class="product__header"></div>
+      <template
         v-for="item in productList"
         :key="item._id"
       >
-        <img class="product__item__img" :src="item.imgUrl" alt="">
-        <div class="product__item__detail">
-          <h4 class="product__item__title">{{item.name}}</h4>
-          <p class="product__item__price">
-            <span class="product__item__yen">&yen;</span>{{item.price}}
-            <span class="product__item__origin">&yen;{{item.oldPrice}}</span>
-          </p>
+        <div class="product__item" v-if="item.count > 0">
+          <svg class="product__item__checked icon" aria-hidden="true" @click="() => changeCartItemChecked(shopId, item._id)">
+            <use :xlink:href="item.check ? '#icon-success_fill' : '#icon-success'"></use>
+          </svg>
+          <img class="product__item__img" :src="item.imgUrl" alt="">
+          <div class="product__item__detail">
+            <h4 class="product__item__title">{{item.name}}</h4>
+            <p class="product__item__price">
+              <span class="product__item__yen">&yen;</span>{{item.price}}
+              <span class="product__item__origin">&yen;{{item.oldPrice}}</span>
+            </p>
+          </div>
+          <div class="product__number">
+            <span class="product__number__minus" @click="() => { changeCartItemInfo(shopId, item._id, item, -1) }">-</span>
+            {{item.count || 0}}
+            <span class="product__number__plus" @click="() => { changeCartItemInfo(shopId, item._id, item, 1) }">+</span>
+          </div>
         </div>
-        <div class="product__number">
-          <span class="product__number__minus" @click="() => { changeCartItemInfo(shopId, item._id, item, -1) }">-</span>
-          {{item.count || 0}}
-          <span class="product__number__plus" @click="() => { changeCartItemInfo(shopId, item._id, item, 1) }">+</span>
-        </div>
-      </div>
+      </template>
     </div>
     <div class="check">
       <div class="check__icon">
@@ -38,9 +43,11 @@
 import { computed } from 'vue'
 import { useStore } from 'vuex'
 import { useRoute } from 'vue-router'
+import { useCommonCartEffect } from './commonCartEffect'
 
 // 购物车逻辑
 const useCartEffect = (shopId) => {
+  const { changeCartItemInfo } = useCommonCartEffect()
   const store = useStore()
   const cartList = store.state.cartList
 
@@ -61,7 +68,9 @@ const useCartEffect = (shopId) => {
     if (productList) {
       for (const i in productList) {
         const product = productList[i]
-        count += (product.count * product.price)
+        if (product.check) {
+          count += (product.count * product.price)
+        }
       }
     }
     return count.toFixed(2)
@@ -72,7 +81,11 @@ const useCartEffect = (shopId) => {
     return productList
   })
 
-  return { total, price, productList }
+  const changeCartItemChecked = (shopId, productId) => {
+    store.commit('changeCartItemChecked', { shopId, productId })
+  }
+
+  return { total, price, productList, changeCartItemInfo, changeCartItemChecked }
 }
 
 export default {
@@ -80,8 +93,8 @@ export default {
   setup () {
     const route = useRoute()
     const shopId = route.params.id
-    const { total, price, productList } = useCartEffect(shopId)
-    return { total, price, productList }
+    const { total, price, productList, changeCartItemInfo, changeCartItemChecked } = useCartEffect(shopId)
+    return { total, price, shopId, productList, changeCartItemInfo, changeCartItemChecked }
   }
 }
 </script>
@@ -100,19 +113,30 @@ export default {
   overflow-x: hidden;
   overflow-y: auto;
   background: $white;
+  &__header {
+    height: .52rem;
+    border-bottom: .01rem solid #f1f1f1;
+  }
   &__item {
     position: relative;
     display: flex;
+    align-items: center;
     padding: .12rem 0;
     margin: 0 .16rem;
     border-bottom: .01rem solid $content-bgcolor;
+    &__checked {
+      color: #0091ff;
+      width: .25rem;
+      height: .25rem;
+      margin-right: .2rem;
+    }
+    &__detail {
+      overflow: hidden;
+    }
     &__img {
       width: .46rem;
       height: .46rem;
       margin-right: .16rem;
-    }
-    &__detail {
-      overflow: hidden;
     }
     &__title {
       margin: 0;
