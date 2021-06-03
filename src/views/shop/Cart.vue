@@ -1,7 +1,21 @@
 <template>
   <div class="cart">
     <div class="product">
-      <div class="product__header"></div>
+      <div class="product__header">
+        <div
+          class="product__header__all"
+          @click="() => setCartItemsChecked(shopId)"
+        >
+          <svg class="product__item__checked icon" aria-hidden="true" @click="() => changeCartItemChecked(shopId, item._id)">
+            <use :xlink:href="allChecked ? '#icon-success_fill' : '#icon-success'"></use>
+          </svg>
+          全选
+        </div>
+        <div
+          class="product__header__clear"
+          @click="() => cleanCartProducts(shopId)"
+        >清空购物车</div>
+      </div>
       <template
         v-for="item in productList"
         :key="item._id"
@@ -75,6 +89,19 @@ const useCartEffect = (shopId) => {
     }
     return count.toFixed(2)
   })
+  const allChecked = computed(() => {
+    const productList = cartList[shopId]
+    let result = true
+    if (productList) {
+      for (const i in productList) {
+        const product = productList[i]
+        if (product.count > 0 && !product.check) {
+          result = false
+        }
+      }
+    }
+    return result
+  })
 
   const productList = computed(() => {
     const productList = cartList[shopId] || []
@@ -85,7 +112,14 @@ const useCartEffect = (shopId) => {
     store.commit('changeCartItemChecked', { shopId, productId })
   }
 
-  return { total, price, productList, changeCartItemInfo, changeCartItemChecked }
+  const cleanCartProducts = (shopId) => {
+    store.commit('cleanCartProducts', { shopId })
+  }
+
+  const setCartItemsChecked = (shopId) => {
+    store.commit('setCartItemsChecked', { shopId })
+  }
+  return { total, price, productList, cleanCartProducts, allChecked, changeCartItemInfo, changeCartItemChecked, setCartItemsChecked }
 }
 
 export default {
@@ -93,8 +127,8 @@ export default {
   setup () {
     const route = useRoute()
     const shopId = route.params.id
-    const { total, price, productList, changeCartItemInfo, changeCartItemChecked } = useCartEffect(shopId)
-    return { total, price, shopId, productList, changeCartItemInfo, changeCartItemChecked }
+    const { total, price, productList, cleanCartProducts, allChecked, changeCartItemInfo, changeCartItemChecked, setCartItemsChecked } = useCartEffect(shopId)
+    return { total, price, shopId, productList, cleanCartProducts, allChecked, changeCartItemInfo, changeCartItemChecked, setCartItemsChecked }
   }
 }
 </script>
@@ -114,8 +148,21 @@ export default {
   overflow-y: auto;
   background: $white;
   &__header {
-    height: .52rem;
+    display: flex;
+    line-height: .52rem;
     border-bottom: .01rem solid #f1f1f1;
+    font-size: .14rem;
+    color: $content-fontcolor;
+    &__all {
+      display: flex;
+      align-items: center;
+      margin-left: .16rem;
+    }
+    &__clear {
+      flex: 1;
+      margin-right: .16rem;
+      text-align: right;
+    }
   }
   &__item {
     position: relative;
@@ -128,7 +175,7 @@ export default {
       color: #0091ff;
       width: .25rem;
       height: .25rem;
-      margin-right: .2rem;
+      margin-right: .1rem;
     }
     &__detail {
       overflow: hidden;
