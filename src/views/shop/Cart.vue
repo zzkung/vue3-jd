@@ -1,12 +1,13 @@
 <template>
+  <div class="mask" v-if="showCart" @click="handleCartShowChange"></div>
   <div class="cart">
-    <div class="product">
+    <div class="product" v-if="showCart">
       <div class="product__header">
         <div
           class="product__header__all"
           @click="() => setCartItemsChecked(shopId)"
         >
-          <svg class="product__item__checked icon" aria-hidden="true" @click="() => changeCartItemChecked(shopId, item._id)">
+          <svg class="product__item__checked icon" aria-hidden="true">
             <use :xlink:href="allChecked ? '#icon-success_fill' : '#icon-success'"></use>
           </svg>
           全选
@@ -42,19 +43,21 @@
     </div>
     <div class="check">
       <div class="check__icon">
-        <img class="check__icon__img" src="http://www.dell-lee.com/imgs/vue3/basket.png" alt="" />
+        <img class="check__icon__img" src="http://www.dell-lee.com/imgs/vue3/basket.png" alt="" @click="handleCartShowChange" />
         <div class="check__icon__tag">{{total}}</div>
       </div>
       <div class="check__info">
         总计：<span class="check__info__price">&yen; {{price}}</span>
       </div>
-      <div class="check__btn">去结算</div>
+      <div class="check__btn">
+        <router-link :to="{ name: 'Home' }">去结算</router-link>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useStore } from 'vuex'
 import { useRoute } from 'vue-router'
 import { useCommonCartEffect } from './commonCartEffect'
@@ -122,13 +125,23 @@ const useCartEffect = (shopId) => {
   return { total, price, productList, cleanCartProducts, allChecked, changeCartItemInfo, changeCartItemChecked, setCartItemsChecked }
 }
 
+// 展示隐藏购物车逻辑
+const toggleCartEffect = () => {
+  const showCart = ref(false)
+  const handleCartShowChange = () => {
+    showCart.value = !showCart.value
+  }
+  return { showCart, handleCartShowChange }
+}
+
 export default {
   name: 'Cart',
   setup () {
     const route = useRoute()
     const shopId = route.params.id
     const { total, price, productList, cleanCartProducts, allChecked, changeCartItemInfo, changeCartItemChecked, setCartItemsChecked } = useCartEffect(shopId)
-    return { total, price, shopId, productList, cleanCartProducts, allChecked, changeCartItemInfo, changeCartItemChecked, setCartItemsChecked }
+    const { showCart, handleCartShowChange } = toggleCartEffect()
+    return { total, price, shopId, productList, cleanCartProducts, allChecked, changeCartItemInfo, changeCartItemChecked, setCartItemsChecked, showCart, handleCartShowChange }
   }
 }
 </script>
@@ -136,11 +149,22 @@ export default {
 <style lang="scss" scoped>
 @import '../../style/mixins.scss';
 @import '../../style/viriables.scss';
+.mask {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba($color: #000000, $alpha: .5);
+  z-index: 1;
+}
 .cart {
   position: absolute;
   left: 0;
   right: 0;
   bottom: 0;
+  background: $white;
+  z-index: 2;
 }
 .product {
   flex: 1;
@@ -149,8 +173,9 @@ export default {
   background: $white;
   &__header {
     display: flex;
+    justify-content: space-between;
     line-height: .52rem;
-    border-bottom: .01rem solid #f1f1f1;
+    border-bottom: .01rem solid $content-bgcolor;
     font-size: .14rem;
     color: $content-fontcolor;
     &__all {
@@ -159,7 +184,6 @@ export default {
       margin-left: .16rem;
     }
     &__clear {
-      flex: 1;
       margin-right: .16rem;
       text-align: right;
     }
@@ -281,6 +305,10 @@ export default {
     text-align: center;
     color: $white;
     font-size: .14rem;
+    a {
+      color: $white;
+      text-decoration: none;
+    }
   }
 }
 </style>
